@@ -266,9 +266,10 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
 
 void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has entered its critical section\n",processID);
-    sleep(1);
+    sleep(15);
     hasCompletedCriticalSection = true;
     hasReceivedLockedMessage = 0;
+    hasSentLockedMessage = false;
     
     printf("----Queue size before remove is: %d\n", queue->size());
     queue->remove(processID);

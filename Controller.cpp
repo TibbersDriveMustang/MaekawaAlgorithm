@@ -6,7 +6,7 @@ using namespace std;
 
 
 //Msg type=100
-Controller::Controller(void):QuorumTable{{0,1},{1,2},{0,2}
+Controller::Controller(void):QuorumTable{{0,1,2},{0,1,3},{0,2,3},{1,2,3}
 //      {0, 1, 2, 3, 4, 8, 12},
 //		{0, 1, 2, 3, 5, 9, 13},
 //		{0, 1, 2, 3, 6, 10, 14},
