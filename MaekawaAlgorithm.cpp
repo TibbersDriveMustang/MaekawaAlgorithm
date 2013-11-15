@@ -49,7 +49,7 @@ bool MaekawaAlgorithm::getQuorumTable(int **quorumtable,int qsize,int Nnodes){
 }
 
 bool MaekawaAlgorithm::requestCriticalSection(){
-	   
+    
     printf("----Node %d is trying to request critical section\n",processID);
     sequenceNo++;
 	struct Packet request;
@@ -57,6 +57,11 @@ bool MaekawaAlgorithm::requestCriticalSection(){
 	request.ORIGIN = processID;
     request.SEQ = sequenceNo;
     request.sender = -1;
+    //reset relinquishList
+    for(int i = 0; i < relinquishList.size(); i++){
+        printf("----relinquishList size: %lu. Member removed: %d \n",relinquishList.size(),relinquishList.back());
+        relinquishList.pop_back();
+    }
     
     //add request to the node queue
 	queue->add(request);
