@@ -89,7 +89,10 @@ bool MaekawaAlgorithm::receiveRequest(Packet request){
 		sequenceNo = request.SEQ;
     
     //add request to the node queue
-	queue->add(request);
+    if(request.ORIGIN != processID){
+        queue->add(request);
+    }
+
     
     //(i) Check if it has been locked
     //(ii)Check if current input message is the top in the queue
