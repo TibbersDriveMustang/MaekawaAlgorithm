@@ -266,7 +266,11 @@ void MaekawaAlgorithm::enterCriticalSection(){
     sleep(1);
     hasCompletedCriticalSection = true;
     hasReceivedLockedMessage = 0;
+    
+    printf("----Queue size before remove is: %d\n", queue->size());
     queue->remove(processID);
+    
+    printf("----Queue size after remove is: %d\n", queue->size());
     printf("----Node %d has delete itself from the queue\n",processID);
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
@@ -284,9 +288,6 @@ bool MaekawaAlgorithm::sendRelease(){
 		release.ORIGIN = processID;
         release.sender = -1;
         release.SEQ = sequenceNo;
-		
-        //delete itself from its own queue
-		queue->update(quorum,quorumsize,processID);
         
 		for(int j = 0 ; j < quorumsize ; j++){
             
