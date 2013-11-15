@@ -221,12 +221,12 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
 	if(sequenceNo < release.SEQ)
         sequenceNo = release.SEQ;
     
-    //Discard the release message from itself
-    if(release.ORIGIN == processID){
-        printf("----Node %d has received RELEASE message from %d. The message is discarded \n",processID,release.ORIGIN);
-        hasCompletedCriticalSection = false;
-        return true;
-    }
+//    //Discard the release message from itself
+//    if(release.ORIGIN == processID){
+//        printf("----Node %d has received RELEASE message from %d. The message is discarded \n",processID,release.ORIGIN);
+//        hasCompletedCriticalSection = false;
+//        return true;
+//    }
     
     //(i)       deletes release message's node from the queue
     //(ii) a)   lock for the most preceding request in the queue. It sends LOCK message.
