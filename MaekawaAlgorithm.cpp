@@ -203,7 +203,7 @@ bool MaekawaAlgorithm::receiveLocked(Packet locked){
     hasReceivedLockedMessage++;
     printf("Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
     
-    if(hasReceivedLockedMessage == quorumsize){
+    if(hasReceivedLockedMessage == quorumsize - 1){
         
         printf("Node %d has entered critical section \n",processID);
         enterCriticalSection();

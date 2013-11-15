@@ -16,7 +16,7 @@
 using namespace std;
 
 #define MAXNODES 3
-#define QuorumSize 3
+#define QuorumSize 2
 class Controller
 {
 private:
