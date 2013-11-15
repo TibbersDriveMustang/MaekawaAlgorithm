@@ -26,6 +26,7 @@ public:
 	~LexiQueue(void);
 	Packet top();
 	Packet remove(int origin);
+    bool equalsTo(Packet m1, Packet m2);
 	bool add(Packet in);
 	int size();
 	bool isEmpty();

@@ -44,6 +44,13 @@ Packet LexiQueue::top(){
 	return top;
 }
 
+bool LexiQueue::equalsTo(Packet m1, Packet m2){
+    if(m1.ORIGIN == m2.ORIGIN && m1.SEQ == m2.SEQ && m1.TYPE == m2.TYPE)
+        return true;
+    else
+        return false;
+    }
+
 bool LexiQueue::add(Packet in){
 	pq.push(in);
 	return true;
