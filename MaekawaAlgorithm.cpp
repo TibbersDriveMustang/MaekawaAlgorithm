@@ -231,7 +231,9 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
     //(i)       deletes release message's node from the queue
     //(ii) a)   lock for the most preceding request in the queue. It sends LOCK message.
     //(ii) b)   No request in the queue. Unlock itself. Do nothing.
-    queue->remove(release.ORIGIN);
+    if(release.ORIGIN != processID){
+        queue->remove(release.ORIGIN);
+    }
     
     if(queue->top().TYPE == -1 ){
         
@@ -263,6 +265,8 @@ void MaekawaAlgorithm::enterCriticalSection(){
     sleep(1);
     hasCompletedCriticalSection = true;
     hasReceivedLockedMessage = 0;
+    queue->remove(processID);
+    printf("----Node %d has delete itself from the queue\n",processID);
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
     sendRelease();
