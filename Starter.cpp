@@ -286,31 +286,31 @@ void *MaekawaProcess(void* queue) {
         
         switch (item->TYPE) {
             case MAKE_REQUEST:
-                printf("MAKE_REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## MAKE_REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveMakeRequest(*item);
                 break;
             case REQUEST:
-                printf("REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveRequest(*item);
                 break;
             case INQUIRE:
-                printf("INQUIRE received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## INQUIRE received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveInquire(*item);
                 break;
             case FAILED:
-                printf("FAILED received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## FAILED received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveFailed(*item);
                 break;
             case RELEASE:
-                printf("RELEASE received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## RELEASE received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveRelease(*item);
                 break;
             case RELINQUISH:
-                printf("RELINQUISH received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## RELINQUISH received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveRelinquish(*item);
                 break;
             case LOCKED:
-                printf("LOCKED received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                printf(" ## LOCKED received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveLocked(*item);
                 break;
                 

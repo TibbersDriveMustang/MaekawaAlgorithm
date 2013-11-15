@@ -50,7 +50,7 @@ bool MaekawaAlgorithm::getQuorumTable(int **quorumtable,int qsize,int Nnodes){
 
 bool MaekawaAlgorithm::requestCriticalSection(){
 	   
-    printf("Node %d is trying to request critical section\n",processID);
+    printf("----Node %d is trying to request critical section\n",processID);
     sequenceNo++;
 	struct Packet request;
 	request.TYPE = REQUEST;
@@ -64,14 +64,14 @@ bool MaekawaAlgorithm::requestCriticalSection(){
     //broadcast request to all processes in its quorum
 	for(int j = 0; j < quorumsize; j++){
         com.sendMessageToID(request,quorum[processID][j]);
-        printf("Node %d has sent REQUEST message to %d \n",processID,quorum[processID][j]);
+        printf("----Node %d has sent REQUEST message to %d \n",processID,quorum[processID][j]);
 	}
 	return true;
 }
 
 void MaekawaAlgorithm::receiveMakeRequest(Packet makeRequest){
     
-    printf("Node %d has received MAKE_REQUEST message from %d \n",processID,makeRequest.ORIGIN);
+    printf("----Node %d has received MAKE_REQUEST message from %d \n",processID,makeRequest.ORIGIN);
     //Compare and maximize the sequence number
     if(sequenceNo < makeRequest.SEQ)
 		sequenceNo = makeRequest.SEQ - 1;
@@ -83,7 +83,7 @@ void MaekawaAlgorithm::receiveMakeRequest(Packet makeRequest){
 
 bool MaekawaAlgorithm::receiveRequest(Packet request){
 	
-    printf("Node %d has received REQUEST message from %d \n",processID,request.ORIGIN);
+    printf("----Node %d has received REQUEST message from %d \n",processID,request.ORIGIN);
     //Compare and maximize the sequence number
     if(sequenceNo<request.SEQ)
 		sequenceNo = request.SEQ;
@@ -102,7 +102,7 @@ bool MaekawaAlgorithm::receiveRequest(Packet request){
         locked.SEQ = sequenceNo;
         locked.sender = -1;
         
-        printf("Node %d has sent LOCKED message to %d \n",processID,request.ORIGIN);
+        printf("----Node %d has sent LOCKED message to %d \n",processID,request.ORIGIN);
         com.sendMessageToID(locked, request.ORIGIN);
         
         lockedBy = request.ORIGIN;
@@ -117,7 +117,7 @@ bool MaekawaAlgorithm::receiveRequest(Packet request){
         inquire.SEQ = sequenceNo;
         inquire.sender = -1;
         
-        printf("Node %d has sent INQUIRE message to %d \n",processID,lockedBy);
+        printf("----Node %d has sent INQUIRE message to %d \n",processID,lockedBy);
         com.sendMessageToID(inquire, lockedBy);
     }
     else if(queue->equalsTo(queue->top(), request) == false){
@@ -129,7 +129,7 @@ bool MaekawaAlgorithm::receiveRequest(Packet request){
         failed.SEQ = sequenceNo;
         failed.sender = -1;
         
-        printf("Node %d has sent FAILED message to %d \n",processID,request.ORIGIN);
+        printf("----Node %d has sent FAILED message to %d \n",processID,request.ORIGIN);
         com.sendMessageToID(failed, request.ORIGIN);
     }
     return true;
@@ -137,7 +137,7 @@ bool MaekawaAlgorithm::receiveRequest(Packet request){
 
 bool MaekawaAlgorithm::receiveInquire(Packet inquire) {
     
-    printf("Node %d has received INQUIRE message from %d \n",processID,inquire.ORIGIN);
+    printf("----Node %d has received INQUIRE message from %d \n",processID,inquire.ORIGIN);
     //Compare and maximize the sequence number
 	if(sequenceNo<inquire.SEQ)
 		sequenceNo = inquire.SEQ;
@@ -150,7 +150,7 @@ bool MaekawaAlgorithm::receiveInquire(Packet inquire) {
 
 bool MaekawaAlgorithm::receiveFailed(Packet failed) {
 
-    printf("Node %d has received FAILED message from %d \n",processID,failed.ORIGIN);
+    printf("----Node %d has received FAILED message from %d \n",processID,failed.ORIGIN);
     //Compare and maximize the sequence number
     if(sequenceNo<failed.SEQ)
 		sequenceNo = failed.SEQ;
@@ -165,7 +165,7 @@ bool MaekawaAlgorithm::receiveFailed(Packet failed) {
         
         //send(relinquish);
         com.sendMessageToID(relinquish, relinquishList.back());
-        printf("Node %d has sent RELINQUISH message to %d \n",processID,relinquishList.back());
+        printf("----Node %d has sent RELINQUISH message to %d \n",processID,relinquishList.back());
         
         relinquishList.pop_back();
     }
@@ -174,7 +174,7 @@ bool MaekawaAlgorithm::receiveFailed(Packet failed) {
 
 bool MaekawaAlgorithm::receiveRelinquish(Packet relinquish){
     
-    printf("Node %d has received RELINQUISH message from %d \n",processID,relinquish.ORIGIN);
+    printf("----Node %d has received RELINQUISH message from %d \n",processID,relinquish.ORIGIN);
     //Compare and maximize the sequence number
 	if(sequenceNo < relinquish.SEQ)
         sequenceNo = relinquish.SEQ;
@@ -187,25 +187,25 @@ bool MaekawaAlgorithm::receiveRelinquish(Packet relinquish){
     locked.sender = -1;
     
     com.sendMessageToID(locked, queue->top().ORIGIN);
-    printf("Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
+    printf("----Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
 
 	return true;
 }
 
 bool MaekawaAlgorithm::receiveLocked(Packet locked){
     
-    printf("Node %d has received LOCKED message from %d \n",processID,locked.ORIGIN);
+    printf("----Node %d has received LOCKED message from %d \n",processID,locked.ORIGIN);
     //Compare and maximize the sequence number
     if(sequenceNo < locked.SEQ)
         sequenceNo = locked.SEQ;
     
     //Increase hasReceivedLockedMessage by 1. If this variable reaches K-1, then the node can enter the critical section.
     hasReceivedLockedMessage++;
-    printf("Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
+    printf("----Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
     
-    if(hasReceivedLockedMessage == quorumsize - 1){
+    if(hasReceivedLockedMessage == quorumsize){
         
-        printf("Node %d has entered critical section \n",processID);
+        printf("----Node %d has entered critical section \n",processID);
         enterCriticalSection();
         //printf("Node %d has exited critical section \n",processID);
         return true;
@@ -215,7 +215,7 @@ bool MaekawaAlgorithm::receiveLocked(Packet locked){
 
 bool MaekawaAlgorithm::receiveRelease(Packet release){
     
-    printf("Node %d has received RELEASE message from %d \n",processID,release.ORIGIN);
+    printf("----Node %d has received RELEASE message from %d \n",processID,release.ORIGIN);
     
     //Compare and maximize the sequence number
 	if(sequenceNo < release.SEQ)
@@ -223,7 +223,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
     
     //Discard the release message from itself
     if(release.ORIGIN == processID){
-        printf("Node %d has received RELEASE message from %d. The message is discarded \n",processID,release.ORIGIN);
+        printf("----Node %d has received RELEASE message from %d. The message is discarded \n",processID,release.ORIGIN);
         hasCompletedCriticalSection = false;
         return true;
     }
@@ -235,7 +235,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
     
     if(queue->top().TYPE == -1 ){
         
-        printf("After Node %d received release message, there is no more request in the queue \n",processID);
+        printf("----After Node %d received release message, there is no more request in the queue \n",processID);
         hasSentLockedMessage = false;
         return true;
     }
@@ -246,9 +246,9 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
         locked.SEQ = sequenceNo;
         locked.sender = -1;
         
-        printf("After Node %d received release message, there is at least one request in the queue \n",processID);
+        printf("----After Node %d received release message, there is at least one request in the queue \n",processID);
         com.sendMessageToID(locked, queue->top().ORIGIN);
-        printf("Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
+        printf("----Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
         
         lockedBy = queue->top().ORIGIN;
         hasSentLockedMessage = true;
@@ -259,12 +259,12 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
 }
 
 void MaekawaAlgorithm::enterCriticalSection(){
-    printf("Node %d has entered its critical section\n",processID);
+    printf("----Node %d has entered its critical section\n",processID);
     sleep(1);
     hasCompletedCriticalSection = true;
     hasReceivedLockedMessage = 0;
-    printf("Node %d has received 0 locked message\n",processID);
-    printf("Node %d has exited its critical section\n",processID);
+    printf("----Node %d has received 0 locked message\n",processID);
+    printf("----Node %d has exited its critical section\n",processID);
     sendRelease();
     
 }
@@ -285,11 +285,11 @@ bool MaekawaAlgorithm::sendRelease(){
         
 		for(int j = 0 ; j < quorumsize ; j++){
             
-            printf("Node %d send release message to node %d \n",processID,quorum[processID][j]);
+            printf("----Node %d send release message to node %d \n",processID,quorum[processID][j]);
             com.sendMessageToID(release, quorum[processID][j]);
             hasCompletedCriticalSection = false;
 		}
-        printf("Node %d has sent all the release messages to its quorum members\n",processID);
+        printf("----Node %d has sent all the release messages to its quorum members\n",processID);
 	}
     
 	return true;
