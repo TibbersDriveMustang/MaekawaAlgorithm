@@ -11,7 +11,6 @@
 
 #pragma once
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include "MessageFormat.h"
 #include "communication.h"
@@ -38,7 +37,6 @@ protected:
     
 public:
     communication com;
-	char CS_FILENAME[25];
     static MaekawaAlgorithm* getInstance();
     void receiveMessage(Packet msg);
     void receiveMakeRequest(Packet makeRequest);

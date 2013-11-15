@@ -270,15 +270,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
     
 	return true;
 }
-void writeToFile(string filename,string line){
-	ofstream myfile (filename.c_str(),ios::out | ios::app);
-	  if (myfile.is_open())
-	  {
-	    myfile <<line<<endl;
-	    myfile.close();
-	  }
-	  else cout << "Unable to open file";
-}
+
 void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has entered its critical section\n",processID);
     sleep(15);
@@ -294,10 +286,6 @@ void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
     sendRelease();
-	string str ="";
-	char buff[4095];
-	sprintf(buff,"Node %d entered CS, Seq: %d \n",ID,sequenceNo);
-	writeToFile("CS.log","");
     
 }
 
