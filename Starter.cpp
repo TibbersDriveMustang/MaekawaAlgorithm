@@ -285,6 +285,10 @@ void *MaekawaProcess(void* queue) {
 		printf("Received: messageType - %d, SEQ number - %ld\n",item->TYPE, item->SEQ);
         
         switch (item->TYPE) {
+            case MAKE_REQUEST:
+                printf("MAKE_REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
+                mnode->receiveMakeRequest(*item);
+                break;
             case REQUEST:
                 printf("REQUEST received from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
                 mnode->receiveRequest(*item);
@@ -314,24 +318,6 @@ void *MaekawaProcess(void* queue) {
                 break;
         }
         delete item;
-        
-        //		if (item->TYPE == SEND_TOKEN){
-        //			printf("SEND_TOKEN recieved from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
-        //			node->receiveToken(*item);
-        //		}else if (item->TYPE == MAKE_REQUEST){
-        //			printf("MAKE_REQUEST recieved from Controller %d and packet type is %d\n",item->ORIGIN,item->TYPE);
-        //			node->requestCS();
-        //		}else if (item->TYPE == HAVE_TOKEN){
-        //			printf("HAVE_TOKEN recieved from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
-        //			node->receiveHaveTkn(*item);
-        //		}else if (item->TYPE == RELEASE){
-        //			printf("RELEASE recieved from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
-        //			node->receiveRelease(*item);
-        //		}else if (item->TYPE == REQUEST){
-        //			printf("REQUEST recieved from Node %d and packet type is %d\n",item->ORIGIN,item->TYPE);
-        //			node->receiveRequest(*item);
-        //		}
-        //		delete item;
 	}
 	return NULL;
 }

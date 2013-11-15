@@ -308,7 +308,7 @@ void Controller::sendCSrequests(int node){
 	Packet pack1;
 	pack1.TYPE = MAKE_REQUEST;
 	pack1.ORIGIN = CONTROLLER_ID;
-	pack1.SEQ =1;
+	pack1.SEQ = 1;
 	pack1.sender = CONTROLLER_ID;
 	communication com;
 	char desIP[16];

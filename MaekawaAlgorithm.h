@@ -39,6 +39,7 @@ public:
     communication com;
     static MaekawaAlgorithm* getInstance();
     void receiveMessage(Packet msg);
+    void receiveMakeRequest(Packet makeRequest);
     void initialization();
     bool setProcessID(int pid);
 	bool getQuorumTable(int **quorumtable,int qsize,int nnodes);
