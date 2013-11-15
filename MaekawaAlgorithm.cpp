@@ -235,7 +235,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
         queue->remove(release.ORIGIN);
     }
     
-    if(queue->top().TYPE == -1 ){
+    if(queue->top().TYPE == -1 ){ //-1 means nothing in the queue
         
         printf("----After Node %d received release message, there is no more request in the queue \n",processID);
         hasSentLockedMessage = false;
@@ -248,6 +248,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
         locked.SEQ = sequenceNo;
         locked.sender = -1;
         
+        printf("----The next request in the queue: %d \n",queue->top().ORIGIN);
         printf("----After Node %d received release message, there is at least one request in the queue \n",processID);
         com.sendMessageToID(locked, queue->top().ORIGIN);
         printf("----Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
