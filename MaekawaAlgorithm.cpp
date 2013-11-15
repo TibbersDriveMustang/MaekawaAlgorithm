@@ -163,7 +163,7 @@ bool MaekawaAlgorithm::receiveFailed(Packet failed) {
     if(sequenceNo<failed.SEQ)
 		sequenceNo = failed.SEQ;
     
-    hasReceivedLockedMessage--;
+    if(hasReceivedLockedMessage > 0)    hasReceivedLockedMessage--;
     printf("----Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
     //Send RELINQUISH message to all the members in relinquishList
     for(int i = 0; i < relinquishList.size(); i++){
