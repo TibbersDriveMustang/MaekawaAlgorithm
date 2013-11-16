@@ -85,6 +85,7 @@ bool MaekawaAlgorithm::requestCriticalSection(){
     
     //add request to the node queue
 	queue->add(request);
+    printf("----The request is: (%lu , %d)",sequenceNo,processID);
     
     //broadcast request to all processes in its quorum
 	for(int j = 0; j < quorumsize; j++){
@@ -263,7 +264,7 @@ bool MaekawaAlgorithm::receiveLocked(Packet locked){
             hasReceivedLockedMessage++;
         }
     }
-    printf("----Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
+    printf("----Node %d has received %d LOCKED messages \n",processID,hasReceivedLockedMessage);
     
     if(hasReceivedLockedMessage == quorumsize){
         
@@ -312,6 +313,10 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
         
         printf("----The next request in the queue: %d \n",queue->top().ORIGIN);
         printf("----After Node %d received release message, there is at least one request in the queue \n",processID);
+        //print the request in the queue
+        printf("----The request is: (%lu , %d) \n",queue->top().SEQ,queue->top().ORIGIN);
+        
+        
         com.sendMessageToID(locked, queue->top().ORIGIN);
         printf("----Node %d has sent LOCKED message to %d \n",processID,queue->top().ORIGIN);
         
@@ -324,6 +329,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
 }
 
 void MaekawaAlgorithm::enterCriticalSection(){
+    printf("**********************************************");
     printf("----Node %d has entered its critical section\n",processID);
     sleep(15);
     hasCompletedCriticalSection = true;
@@ -336,6 +342,7 @@ void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has delete itself from the queue\n",processID);
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
+    printf("**********************************************");
     
     //reset quorumVote Table
     printf("--^^--quorumVote Table--^^-- \n");
