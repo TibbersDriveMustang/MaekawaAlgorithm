@@ -296,7 +296,8 @@ void Controller::Algorithm2(){
 void Controller::UserInput(){
 	printf("Enter your requests for critical section here...\n");
 	printf("");
-	for(int i=0;i<10;i++){
+	while(true){
+    //for(int i=0;i<10;i++){
 		int id=0;
 		printf("enter id to send request for CS\n");
 		cin>>id;

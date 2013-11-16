@@ -31,6 +31,8 @@ void MaekawaAlgorithm::initialization(){
     
     //the current node has ever sent a locked message to other nodes. It has been lock by some nodes. When it receives another request, it needs to send INQUIRE messages.
     hasSentLockedMessage = false;
+    
+    hasSentRequestMessage = 0;
     hasReceivedLockedMessage = 0;
 	pthread_mutex_init(&sharedLock, NULL);
 }
@@ -45,6 +47,24 @@ bool MaekawaAlgorithm::getQuorumTable(int **quorumtable,int qsize,int Nnodes){
     quorum = quorumtable;
     quorumsize = qsize;
     NoOfnodes = Nnodes;
+    
+    printf("--^^--quorumVote Table--^^-- \n");
+    //initialize quorumVote
+    for(int i = 0; i < quorumsize; i++){
+        vector<int> temp;
+        temp.push_back(quorum[processID][i]);
+        temp.push_back(0);
+        quorumVote.push_back(temp);
+        //quorumVote[i].assign(temp[0],temp[1]);
+        printf("%d , %d \n",quorumVote[i][0],quorumVote[i][1]);
+        
+//        quorumVote[i][1] = 100000;
+//        printf("%d , %d \n",quorumVote[i][0],quorumVote[i][1]);
+        
+    }
+    
+    
+    
     return true;
 }
 
@@ -81,8 +101,13 @@ void MaekawaAlgorithm::receiveMakeRequest(Packet makeRequest){
     if(sequenceNo < makeRequest.SEQ)
 		sequenceNo = makeRequest.SEQ - 1;
     
+    //
+    hasSentRequestMessage ++;
+    printf("----Node %d has %d request to send.\n",processID,hasSentRequestMessage);
+    
     //Call requestCriticalSection to broadcast request
-    requestCriticalSection();
+    if(hasSentRequestMessage == 1)
+        requestCriticalSection();
     
 }
 
@@ -163,8 +188,15 @@ bool MaekawaAlgorithm::receiveFailed(Packet failed) {
     if(sequenceNo<failed.SEQ)
 		sequenceNo = failed.SEQ;
     
-    if(hasReceivedLockedMessage > 0)    hasReceivedLockedMessage--;
-    printf("----Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
+    int temp = -1;
+    for(int i = 0; i < quorumsize; i++){
+        if(quorumVote[i][0] == failed.ORIGIN) temp = i;
+    }
+    quorumVote[temp][1] = 0;
+    for(int i = 0; i < quorumsize; i++){
+        printf("%d , %d \n",quorumVote[i][0],quorumVote[i][1]);
+    }
+    
     //Send RELINQUISH message to all the members in relinquishList
     for(int i = 0; i < relinquishList.size(); i++){
         struct Packet relinquish;
@@ -210,7 +242,27 @@ bool MaekawaAlgorithm::receiveLocked(Packet locked){
         sequenceNo = locked.SEQ;
     
     //Increase hasReceivedLockedMessage by 1. If this variable reaches K-1, then the node can enter the critical section.
-    hasReceivedLockedMessage++;
+    //hasReceivedLockedMessage++;
+    
+    //Update quorumVote table
+    
+    int temp = -1;
+    for(int i = 0; i < quorumsize; i++){
+        if(quorumVote[i][0] == locked.ORIGIN) temp = i;
+    }
+    quorumVote[temp][1] = 1;
+    
+    hasReceivedLockedMessage = 0;
+    
+    printf("--^^--quorumVote Table--^^-- \n");
+    
+    //Check if the current node has received all the locked messages
+    for(int i = 0; i < quorumsize; i++){
+        printf("%d , %d \n",quorumVote[i][0],quorumVote[i][1]);
+        if(quorumVote[i][1] == 1){
+            hasReceivedLockedMessage++;
+        }
+    }
     printf("----Node %d has received %d locked messages \n",processID,hasReceivedLockedMessage);
     
     if(hasReceivedLockedMessage == quorumsize){
@@ -275,7 +327,6 @@ void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has entered its critical section\n",processID);
     sleep(15);
     hasCompletedCriticalSection = true;
-    hasReceivedLockedMessage = 0;
     hasSentLockedMessage = false;
     
     printf("----Queue size before remove is: %d\n", queue->size());
@@ -285,8 +336,21 @@ void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has delete itself from the queue\n",processID);
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
+    
+    //reset quorumVote Table
+    printf("--^^--quorumVote Table--^^-- \n");
+    
+    for(int i = 0; i < quorumsize; i++){
+        quorumVote[i][1] = 0;
+        printf("%d , %d \n",quorumVote[i][0],quorumVote[i][1]);
+    }
     sendRelease();
     
+    hasSentRequestMessage--;
+    printf("----Node %d has %d request left to send.\n",processID,hasSentRequestMessage);
+    //Call requestCriticalSection to broadcast request
+    if(hasSentRequestMessage > 0)
+        requestCriticalSection();
 }
 
 bool MaekawaAlgorithm::sendRelease(){
