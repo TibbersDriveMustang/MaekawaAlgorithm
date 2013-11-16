@@ -29,8 +29,10 @@ protected:
 	bool hasFailed;
 	bool hasCompletedCriticalSection;
     bool hasSentLockedMessage;
+    int hasSentRequestMessage;
     int lockedBy;
     int hasReceivedLockedMessage;
+    vector< vector<int> > quorumVote;
     vector<int> relinquishList;
 	LexiQueue *queue;
     pthread_mutex_t sharedLock;
