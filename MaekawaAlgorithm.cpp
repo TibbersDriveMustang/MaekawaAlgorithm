@@ -85,7 +85,7 @@ bool MaekawaAlgorithm::requestCriticalSection(){
     
     //add request to the node queue
 	queue->add(request);
-    printf("----The request is: (%lu , %d)",sequenceNo,processID);
+    printf("----The request is: (%lu , %d) \n",sequenceNo,processID);
     
     //broadcast request to all processes in its quorum
 	for(int j = 0; j < quorumsize; j++){
@@ -329,7 +329,7 @@ bool MaekawaAlgorithm::receiveRelease(Packet release){
 }
 
 void MaekawaAlgorithm::enterCriticalSection(){
-    printf("**********************************************");
+    printf("********************************************\n");
     printf("----Node %d has entered its critical section\n",processID);
     sleep(15);
     hasCompletedCriticalSection = true;
@@ -342,7 +342,7 @@ void MaekawaAlgorithm::enterCriticalSection(){
     printf("----Node %d has delete itself from the queue\n",processID);
     printf("----Node %d has received 0 locked message\n",processID);
     printf("----Node %d has exited its critical section\n",processID);
-    printf("**********************************************");
+    printf("********************************************\n");
     
     //reset quorumVote Table
     printf("--^^--quorumVote Table--^^-- \n");

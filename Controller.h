@@ -15,8 +15,8 @@
 #include"communication.h"
 using namespace std;
 
-#define MAXNODES 4
-#define QuorumSize 3
+#define MAXNODES 16
+#define QuorumSize 7
 class Controller
 {
 private:
